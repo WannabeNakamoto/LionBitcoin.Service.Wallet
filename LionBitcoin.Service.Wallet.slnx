@@ -1,3 +1,8 @@
 <Solution>
-  <Project Path="LionBitcoin.Service.Wallet.Api/LionBitcoin.Service.Wallet.Api.csproj" />
+  <Folder Name="/client/">
+    <Project Path="client\LionBitcoin.Service.Wallet.Client\LionBitcoin.Service.Wallet.Client.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/server/">
+    <Project Path="server/LionBitcoin.Service.Wallet.Api/LionBitcoin.Service.Wallet.Api.csproj" />
+  </Folder>
 </Solution>
