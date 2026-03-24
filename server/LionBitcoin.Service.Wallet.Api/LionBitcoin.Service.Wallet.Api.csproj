@@ -11,4 +11,9 @@
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.5" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\LionBitcoin.Service.Wallet.Infrastructure\LionBitcoin.Service.Wallet.Infrastructure.csproj" />
+      <ProjectReference Include="..\LionBitcoin.Service.Wallet.Persistence\LionBitcoin.Service.Wallet.Persistence.csproj" />
+    </ItemGroup>
+
 </Project>

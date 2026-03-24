@@ -4,5 +4,9 @@
   </Folder>
   <Folder Name="/server/">
     <Project Path="server/LionBitcoin.Service.Wallet.Api/LionBitcoin.Service.Wallet.Api.csproj" />
+    <Project Path="server\LionBitcoin.Service.Wallet.Application\LionBitcoin.Service.Wallet.Application.csproj" Type="Classic C#" />
+    <Project Path="server\LionBitcoin.Service.Wallet.Domain\LionBitcoin.Service.Wallet.Domain.csproj" Type="Classic C#" />
+    <Project Path="server\LionBitcoin.Service.Wallet.Infrastructure\LionBitcoin.Service.Wallet.Infrastructure.csproj" Type="Classic C#" />
+    <Project Path="server\LionBitcoin.Service.Wallet.Persistence\LionBitcoin.Service.Wallet.Persistence.csproj" Type="Classic C#" />
   </Folder>
 </Solution>
