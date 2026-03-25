@@ -10,4 +10,9 @@
       <ProjectReference Include="..\LionBitcoin.Service.Wallet.Client.Application\LionBitcoin.Service.Wallet.Client.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Refit" Version="10.1.6" />
+      <PackageReference Include="Refit.HttpClientFactory" Version="10.1.6" />
+    </ItemGroup>
+
 </Project>
