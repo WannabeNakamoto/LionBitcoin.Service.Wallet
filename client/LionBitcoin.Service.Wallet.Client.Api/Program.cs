@@ -8,7 +8,7 @@ var app = builder.Build();
 app.MapOpenApi();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/openapi/docs.json", "LionBitcoin.Service.Wallet.Api");
+    options.SwaggerEndpoint("/openapi/docs.json", "LionBitcoin.Service.Wallet.Client.Api");
 });
 
 app.MapControllers();

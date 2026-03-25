@@ -16,4 +16,10 @@
       <ProjectReference Include="..\LionBitcoin.Service.Wallet.Persistence\LionBitcoin.Service.Wallet.Persistence.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="appsettings.Development.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
