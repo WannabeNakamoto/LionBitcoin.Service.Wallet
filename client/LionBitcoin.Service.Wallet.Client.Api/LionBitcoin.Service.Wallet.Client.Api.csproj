@@ -17,4 +17,9 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\LionBitcoin.Service.Wallet.Client.Infrastructure\LionBitcoin.Service.Wallet.Client.Infrastructure.csproj" />
+      <ProjectReference Include="..\LionBitcoin.Service.Wallet.Client.Persistence\LionBitcoin.Service.Wallet.Client.Persistence.csproj" />
+    </ItemGroup>
+
 </Project>
