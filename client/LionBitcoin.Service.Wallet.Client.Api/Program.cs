@@ -1,5 +1,6 @@
 using LionBitcoin.Service.Wallet.Client.Application;
 using LionBitcoin.Service.Wallet.Client.Infrastructure;
+using LionBitcoin.Service.Wallet.Client.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,8 @@ builder.Services.AddOpenApi("docs");
 
 builder.Services
     .AddApplication()
-    .AddInfrastructure();
+    .AddInfrastructure()
+    .AddPersistence();
 
 var app = builder.Build();
 
