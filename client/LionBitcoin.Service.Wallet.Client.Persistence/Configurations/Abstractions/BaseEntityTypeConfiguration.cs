@@ -15,7 +15,7 @@ public abstract class BaseEntityTypeConfiguration<TEntity, TEntityId> : IEntityT
         builder.Property(x => x.CreatedAt).HasColumnType("timestamptz").IsRequired();
         builder.Property(x => x.UpdatedAt).HasColumnType("timestamptz").IsRequired(false);
 
-        builder.HasIndex(x => x.CreatedAt, "ix_wallet_created_at_index").HasMethod("brin");
+        builder.HasIndex(x => x.CreatedAt, $"ix_{typeof(TEntity).Name.ToLower()}s_created_at_index").HasMethod("brin");
         ConfigureBaseEntity(builder);
     }
 

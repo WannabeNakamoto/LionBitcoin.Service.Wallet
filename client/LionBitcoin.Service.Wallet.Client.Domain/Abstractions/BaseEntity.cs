@@ -6,5 +6,5 @@ public abstract class BaseEntity<T> where T : struct
 
     public DateTimeOffset CreatedAt { get; set; }
 
-    public DateTimeOffset UpdatedAt { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
 }

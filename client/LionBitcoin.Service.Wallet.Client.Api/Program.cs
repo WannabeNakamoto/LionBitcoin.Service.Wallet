@@ -21,4 +21,7 @@ app.UseSwaggerUI(options =>
 });
 
 app.MapControllers();
+
+app.ConfigurePersistence();
+
 app.Run();
