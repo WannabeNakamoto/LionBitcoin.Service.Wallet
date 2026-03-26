@@ -397,7 +397,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 .idea/
-global.json
 .config/
 
 node_modules/
