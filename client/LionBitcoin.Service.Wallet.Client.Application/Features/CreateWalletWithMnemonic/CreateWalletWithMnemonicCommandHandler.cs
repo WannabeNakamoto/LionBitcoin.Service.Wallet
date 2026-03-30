@@ -15,8 +15,7 @@ public class CreateWalletWithMnemonicCommandHandler(
         Domain.Wallet wallet = new Domain.Wallet()
         {
             AccountPrivateKey = privateKey,
-            CreatedAt = timeProvider.GetUtcNow(),
-            UpdatedAt = null,
+            DepositAddress = walletService.GenerateDepositAddress(privateKey),
         };
         await walletRepository.Insert(wallet, cancellationToken);
         return new CreateWalletWithMnemonicResponse

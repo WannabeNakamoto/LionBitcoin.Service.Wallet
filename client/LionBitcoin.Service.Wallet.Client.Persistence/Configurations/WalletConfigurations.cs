@@ -10,5 +10,9 @@ public class WalletConfigurations : BaseEntityTypeConfiguration<Domain.Wallet, G
         builder.Property(x => x.AccountPrivateKey)
             .IsRequired()
             .HasMaxLength(32);
+
+        builder.Property(x => x.DepositAddress)
+            .IsRequired()
+            .HasMaxLength(62);
     }
 }
