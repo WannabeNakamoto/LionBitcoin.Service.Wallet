@@ -1,6 +1,6 @@
 ﻿namespace LionBitcoin.Service.Wallet.Client.Domain.Abstractions;
 
-public abstract class BaseEntity<T> where T : struct
+public abstract class BaseEntity<T> where T : IEquatable<T>
 {
     public T Id { get; set; }
 

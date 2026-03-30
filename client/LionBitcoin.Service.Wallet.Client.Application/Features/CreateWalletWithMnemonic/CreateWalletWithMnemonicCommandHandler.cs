@@ -1,12 +1,12 @@
+using LionBitcoin.Service.Wallet.Client.Application.Repositories;
 using LionBitcoin.Service.Wallet.Client.Application.Services.Abstractions;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace LionBitcoin.Service.Wallet.Client.Application.Features.CreateWalletWithMnemonic;
 
 public class CreateWalletWithMnemonicCommandHandler(
     IWalletService walletService,
-    DbContext dbContext,
+    IWalletRepository walletRepository,
     TimeProvider timeProvider) : IRequestHandler<CreateWalletWithMnemonicCommand, CreateWalletWithMnemonicResponse>
 {
     public async Task<CreateWalletWithMnemonicResponse> Handle(CreateWalletWithMnemonicCommand request, CancellationToken cancellationToken)
@@ -18,8 +18,7 @@ public class CreateWalletWithMnemonicCommandHandler(
             CreatedAt = timeProvider.GetUtcNow(),
             UpdatedAt = null,
         };
-        dbContext.Set<Domain.Wallet>().Add(wallet);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await walletRepository.Insert(wallet, cancellationToken);
         return new CreateWalletWithMnemonicResponse
         {
             WalletId = wallet.Id,

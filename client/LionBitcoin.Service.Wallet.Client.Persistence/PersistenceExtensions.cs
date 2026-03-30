@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LionBitcoin.Service.Wallet.Client.Application.Repositories;
+using LionBitcoin.Service.Wallet.Client.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +24,7 @@ public static class PersistenceExtensions
                 IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 options.UseNpgsql(configuration.GetConnectionString(nameof(WalletClientDbContext)));
             });
+            services.AddScoped<IWalletRepository, WalletRepository>();
             return services;
         }
     }

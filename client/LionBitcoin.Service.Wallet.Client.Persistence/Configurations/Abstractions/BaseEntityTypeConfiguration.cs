@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace LionBitcoin.Service.Wallet.Client.Persistence.Configurations.Abstractions;
 
 public abstract class BaseEntityTypeConfiguration<TEntity, TEntityId> : IEntityTypeConfiguration<TEntity>
-    where TEntityId : struct
+    where TEntityId : IEquatable<TEntityId>
     where TEntity : BaseEntity<TEntityId>
 {
     public void Configure(EntityTypeBuilder<TEntity> builder)
