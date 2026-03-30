@@ -5,7 +5,7 @@ namespace LionBitcoin.Service.Wallet.Client.Persistence;
 
 public class WalletClientDbContext(DbContextOptions<WalletClientDbContext> options) : DbContext(options)
 {
-    public DbSet<Domain.Wallet> Wallets { get; set; }
+    public DbSet<Domain.Entities.Wallet> Wallets { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

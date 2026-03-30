@@ -1,6 +1,6 @@
 ﻿using LionBitcoin.Service.Wallet.Client.Domain.Abstractions;
 
-namespace LionBitcoin.Service.Wallet.Client.Domain;
+namespace LionBitcoin.Service.Wallet.Client.Domain.Entities;
 
 public class Wallet : BaseEntity<Guid>
 {

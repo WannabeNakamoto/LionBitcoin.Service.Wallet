@@ -5,4 +5,4 @@ namespace LionBitcoin.Service.Wallet.Client.Persistence.Repositories;
 
 public class WalletRepository(
     WalletClientDbContext dbContext, TimeProvider timeProvider)
-    : BaseRepository<Domain.Wallet, Guid>(dbContext, timeProvider), IWalletRepository;
+    : BaseRepository<Domain.Entities.Wallet, Guid>(dbContext, timeProvider), IWalletRepository;

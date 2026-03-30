@@ -18,6 +18,21 @@ public abstract class BaseRepository<TEntity, TId>(
         dbContext.Entry(entity).State = EntityState.Detached;
     }
 
+    public async Task InsertRange(List<TEntity> entities, CancellationToken cancellationToken = default)
+    {
+        DateTimeOffset now = timeProvider.GetUtcNow();
+        foreach (TEntity entity in entities)
+        {
+            entity.CreatedAt = now;
+        }
+        dbContext.Set<TEntity>().AddRange(entities);
+        await dbContext.SaveChangesAsync(cancellationToken);
+        foreach (TEntity entity in entities)
+        {
+            dbContext.Entry(entity).State = EntityState.Detached;
+        }
+    }
+
     public async Task Update(TEntity entity, CancellationToken cancellationToken = default)
     {
         entity.UpdatedAt = timeProvider.GetUtcNow();

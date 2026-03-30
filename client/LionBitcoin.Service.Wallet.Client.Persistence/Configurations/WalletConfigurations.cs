@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LionBitcoin.Service.Wallet.Client.Persistence.Configurations;
 
-public class WalletConfigurations : BaseEntityTypeConfiguration<Domain.Wallet, Guid>
+public class WalletConfigurations : BaseEntityTypeConfiguration<Domain.Entities.Wallet, Guid>
 {
-    protected override void ConfigureBaseEntity(EntityTypeBuilder<Domain.Wallet> builder)
+    protected override void ConfigureBaseEntity(EntityTypeBuilder<Domain.Entities.Wallet> builder)
     {
         builder.Property(x => x.AccountPrivateKey)
             .IsRequired()

@@ -8,6 +8,8 @@ public interface IBaseRepository<TEntity, in TId>
 {
     Task Insert(TEntity entity, CancellationToken cancellationToken = default);
 
+    Task InsertRange(List<TEntity> entities, CancellationToken cancellationToken = default);
+
     Task Update(TEntity entity, CancellationToken cancellationToken = default);
 
     Task<TEntity> GetById(TId id, CancellationToken cancellationToken = default);
