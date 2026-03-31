@@ -14,7 +14,7 @@ public class WalletConfigurations : BaseEntityTypeConfiguration<Domain.Entities.
 
         builder.Property(x => x.DepositAddress)
             .IsRequired()
-            .HasMaxLength(62);
+            .HasMaxLength(64); // In case of mainnet, address is 62 in length, but on regtest, it is 64
 
         builder.Property(x => x.LastSyncedTime)
             .HasColumnType("timestamptz")
