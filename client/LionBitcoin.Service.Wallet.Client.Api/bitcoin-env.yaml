@@ -1,0 +1,193 @@
+# =============================================================================
+#  Bitcoin RegTest Dev Stack
+#  
+#  Services:
+#    - bitcoind        → Bitcoin Core in regtest mode  (RPC: 18443, P2P: 18444)
+#    - electrs         → Electrum indexer for address lookups (port: 60001)
+#    - mempool-db      → MySQL for mempool backend
+#    - mempool-api     → Mempool backend API            (port: 8999)
+#    - mempool-web     → Mempool frontend UI            (http://localhost:8080)
+#
+#  Usage:
+#    docker compose up -d
+#    docker compose exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin createwallet "dev"
+#    docker compose exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin getnewaddress
+#    docker compose exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin generatetoaddress 101 <address>
+# =============================================================================
+
+networks:
+  bitcoin-regtest:
+    driver: bridge
+
+volumes:
+  bitcoin_data:
+  electrs_data:
+  mysql_data:
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # Bitcoin Core - RegTest node
+  # ---------------------------------------------------------------------------
+  bitcoind:
+    image: ruimarinho/bitcoin-core:latest
+    container_name: bitcoin-regtest
+    restart: unless-stopped
+    networks:
+      - bitcoin-regtest
+    ports:
+      - "18443:18443"   # JSON-RPC
+      - "18444:18444"   # P2P
+    volumes:
+      - bitcoin_data:/home/bitcoin/.bitcoin
+    command:
+      - -printtoconsole
+      - -regtest=1
+      - -server=1
+      - -rpcuser=admin
+      - -rpcpassword=admin
+      - -rpcallowip=0.0.0.0/0
+      - -rpcbind=0.0.0.0
+      - -rpcport=18443
+      - -txindex=1
+      - -fallbackfee=0.0001
+      - -mintxfee=0.00001
+      - -zmqpubrawblock=tcp://0.0.0.0:28332
+      - -zmqpubrawtx=tcp://0.0.0.0:28333
+    healthcheck:
+      test: ["CMD", "bitcoin-cli", "-regtest", "-rpcuser=admin", "-rpcpassword=admin", "getblockchaininfo"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  # ---------------------------------------------------------------------------
+  # Electrs - Electrum-compatible indexer (needed for address lookups in mempool)
+  # ---------------------------------------------------------------------------
+  electrs:
+    image: mempool/electrs:latest
+    container_name: electrs-regtest
+    restart: unless-stopped
+    networks:
+      - bitcoin-regtest
+    ports:
+      - "60001:60001"   # Electrum TCP
+    volumes:
+      - electrs_data:/data
+      - ./electrs.toml:/config/electrs.toml:ro
+    environment:
+      ELECTRS_CONF: /config/electrs.toml
+    depends_on:
+      bitcoind:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------------------
+  # MySQL - database for mempool backend
+  # ---------------------------------------------------------------------------
+  mempool-db:
+    image: mariadb:10.11
+    container_name: mempool-db
+    restart: unless-stopped
+    networks:
+      - bitcoin-regtest
+    environment:
+      MYSQL_DATABASE: mempool
+      MYSQL_USER: mempool
+      MYSQL_PASSWORD: mempool
+      MYSQL_ROOT_PASSWORD: mempool_root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ---------------------------------------------------------------------------
+  # Mempool backend API
+  # ---------------------------------------------------------------------------
+  mempool-api:
+    image: mempool/backend:latest
+    container_name: mempool-api
+    restart: unless-stopped
+    networks:
+      - bitcoin-regtest
+    ports:
+      - "8999:8999"
+    environment:
+      # Network
+      MEMPOOL_NETWORK: "regtest"
+      MEMPOOL_BACKEND: "electrum"
+      MEMPOOL_HTTP_PORT: "8999"
+      MEMPOOL_SPAWN_CLUSTER_PROCS: "0"
+      MEMPOOL_API_URL_PREFIX: "/api/v1/"
+      MEMPOOL_POLL_RATE_MS: "2000"
+      MEMPOOL_CACHE_DIR: "/backend/cache"
+      MEMPOOL_CLEAR_PROTECTION_MINUTES: "0"
+      MEMPOOL_INDEXING_BLOCKS_AMOUNT: "0"
+      MEMPOOL_AUTOMATIC_POOLS_UPDATE: "false"
+      MEMPOOL_PRICE_UPDATES_PER_HOUR: "0"
+
+      # Bitcoin Core RPC
+      CORE_RPC_HOST: "bitcoind"
+      CORE_RPC_PORT: "18443"
+      CORE_RPC_USERNAME: "admin"
+      CORE_RPC_PASSWORD: "admin"
+      CORE_RPC_TIMEOUT: "60000"
+
+      # Electrum server
+      ELECTRUM_HOST: "electrs"
+      ELECTRUM_PORT: "60001"
+      ELECTRUM_TLS_ENABLED: "false"
+
+      # Database
+      DATABASE_ENABLED: "true"
+      DATABASE_HOST: "mempool-db"
+      DATABASE_PORT: "3306"
+      DATABASE_USERNAME: "mempool"
+      DATABASE_PASSWORD: "mempool"
+      DATABASE_DATABASE: "mempool"
+    depends_on:
+      mempool-db:
+        condition: service_healthy
+      electrs:
+        condition: service_started
+    volumes:
+      - ./cache:/backend/cache
+
+  # ---------------------------------------------------------------------------
+  # Mempool frontend UI  →  http://localhost:8080
+  # ---------------------------------------------------------------------------
+  mempool-web:
+    image: mempool/frontend:latest
+    container_name: mempool-web
+    restart: unless-stopped
+    networks:
+      - bitcoin-regtest
+    ports:
+      - "8080:8080"
+    environment:
+      FRONTEND_HTTP_PORT: "8080"
+      BACKEND_MAINNET_HTTP_HOST: "mempool-api"
+    depends_on:
+      - mempool-api
+
+
+# -------------------------------------------------------------------------------------
+# Create wallet: docker compose -f bitcoin-env.yaml exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin createwallet "dev"
+# Generate new address: docker compose -f bitcoin-env.yaml exec bitcoind bitcoin-cli -regtest -rpcwallet="dev" -rpcuser=admin -rpcpassword=admin getnewaddress
+# Mine block: docker compose -f bitcoin-env.yaml exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin generatetoaddress 1 "bcrt1q..."
+# --------------------------------------------------------------------------------------
+# You also can create alias in shell for easy execution alias btc='docker compose -f bitcoin-env.yaml exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin'
+# And then use like this: btc generatetoaddress 1 "bcrt1q..." 
+# --------------------------------------------------------------------------------------
+# Alias Only for the single session. When you close the terminal it's gone.
+# To make it permanent, add it to your PowerShell profile file:
+# Run this in PowerShell to open your profile
+# notepad $PROFILE
+# If the file doesn't exist yet, create it first
+# New-Item -Path $PROFILE -Type File -Force
+# Then add this line to the file and save:
+# powershellfunction btc { docker compose -f x.yaml exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin @args }
+# Note it's a function not an alias — PowerShell aliases can't pass arguments, so a function is the right way to do it. The @args part forwards whatever extra arguments you type (like generatetoaddress 1 "bcrt1q...").
+# After saving, either restart your terminal or run . $PROFILE to reload it immediately.
