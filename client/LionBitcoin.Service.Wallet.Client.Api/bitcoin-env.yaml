@@ -9,6 +9,10 @@
 #    docker compose -f bitcoin-env.yaml exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin createwallet "dev"
 #    docker compose -f bitcoin-env.yaml exec bitcoind bitcoin-cli -rpcwallet="dev" -regtest -rpcuser=admin -rpcpassword=admin getnewaddress
 #    docker compose -f bitcoin-env.yaml exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin generatetoaddress 101 <address>
+# ------------- Check balance for specific address:
+#    docker compose -f bitcoin-env.yaml exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin scantxoutset start '["addr(<ADDRESS>)"]'
+# If running on Windows machine, use \" \" because it has parsing issue: Error parsing JSON: [addr(<ADDR>)]
+# docker compose -f bitcoin-env.yaml exec bitcoind bitcoin-cli -regtest -rpcuser=admin -rpcpassword=admin scantxoutset start '[\"addr(<ADDRESS>)\"]'
 # =============================================================================
 
 networks:
