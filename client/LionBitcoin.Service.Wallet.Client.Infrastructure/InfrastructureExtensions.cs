@@ -1,6 +1,6 @@
 using LionBitcoin.Service.Wallet.Client.Application.Services.Abstractions;
-using LionBitcoin.Service.Wallet.Client.Infrastructure.MempoolClient;
-using LionBitcoin.Service.Wallet.Client.Infrastructure.MempoolClient.Options;
+using LionBitcoin.Service.Wallet.Client.Infrastructure.BitcoinCoreClient;
+using LionBitcoin.Service.Wallet.Client.Infrastructure.BitcoinCoreClient.Options;
 using LionBitcoin.Service.Wallet.Client.Infrastructure.Services;
 using Refit;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,19 +15,19 @@ public static class InfrastructureExtensions
         public IServiceCollection AddInfrastructure()
         {
             return services
-                .AddMempoolClient()
-                .AddScoped<IBlockchainInfoService, BlockchainInfoServiceMempool>();
+                .AddBitcoinCoreClient()
+                .AddScoped<IBlockchainInfoService, BlockchainInfoServiceBitcoinCore>();
         }
 
-        private IServiceCollection AddMempoolClient()
+        private IServiceCollection AddBitcoinCoreClient()
         {
-            services.AddOptions<MempoolClientOptions>()
-                .BindConfiguration(nameof(MempoolClientOptions));
-            services.AddRefitClient<IMempoolClient>()
+            services.AddOptions<BitcoinCoreClientOptions>()
+                .BindConfiguration(nameof(BitcoinCoreClientOptions));
+            services.AddRefitClient<IBitcoinCoreClient>()
                 .ConfigureHttpClient((serviceProvider,client) =>
                 {
-                    MempoolClientOptions clientOptions =
-                        serviceProvider.GetRequiredService<IOptions<MempoolClientOptions>>().Value;
+                    BitcoinCoreClientOptions clientOptions =
+                        serviceProvider.GetRequiredService<IOptions<BitcoinCoreClientOptions>>().Value;
                     client.BaseAddress = new Uri(clientOptions.BaseUrl);
                 });
             return services;
