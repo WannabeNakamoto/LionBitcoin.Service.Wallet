@@ -2,6 +2,7 @@ using LionBitcoin.Service.Wallet.Client.Application.Options;
 using LionBitcoin.Service.Wallet.Client.Application.Services.Abstractions;
 using LionBitcoin.Service.Wallet.Client.Application.Services.Models;
 using LionBitcoin.Service.Wallet.Client.Application.Utils;
+using LionBitcoin.Service.Wallet.Client.Infrastructure.BitcoinCoreClient;
 using LionBitcoin.Service.Wallet.Client.Infrastructure.MempoolClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -12,19 +13,19 @@ namespace LionBitcoin.Service.Wallet.Client.Infrastructure.Services;
 public class BlockchainInfoServiceMempool(
     ILogger<BlockchainInfoServiceMempool> logger,
     IOptions<ApplicationOptions> applicationOptions,
-    IMempoolClient mempoolClient) : IBlockchainInfoService
+    IBitcoinCoreClient bitcoinCoreClient) : IBlockchainInfoService
 {
     public async Task<List<Utxo>> GetUtxos(string address, CancellationToken cancellationToken = default)
     {
-        List<MempoolClient.Models.Utxo> utxos = await mempoolClient.GetUtxos(address, cancellationToken);
-        Utxo[] result = await Task.WhenAll(utxos.Select(async utxoFromMempool =>
+        List<BitcoinCoreClient.Models.Utxo> utxos = await mempoolClient.GetUtxos(address, cancellationToken);
+        Utxo[] result = await Task.WhenAll(utxos.Select(async utxoFromBitcoinCore =>
         {
-            TxOut output = await GetOutput(utxoFromMempool, cancellationToken);
+            TxOut output = await GetOutput(utxoFromBitcoinCore, cancellationToken);
             return new Utxo
             {
-                Amount = utxoFromMempool.Amount,
-                TransactionId = utxoFromMempool.TransactionId,
-                OutputIndex = utxoFromMempool.OutputIndex,
+                Amount = utxoFromBitcoinCore.Amount,
+                TransactionId = utxoFromBitcoinCore.TransactionId,
+                OutputIndex = utxoFromBitcoinCore.OutputIndex,
                 LockingScriptHex = output.ScriptPubKey.ToHex(),
                 Confirmations = 0, // TODO: calculate confirmations based on mempool data
             };
@@ -33,11 +34,11 @@ public class BlockchainInfoServiceMempool(
         return result.ToList();
     }
 
-    private async Task<TxOut> GetOutput(MempoolClient.Models.Utxo utxoFromMempool, CancellationToken cancellationToken)
+    private async Task<TxOut> GetOutput(BitcoinCoreClient.Models.Utxo utxoFromBitcoinCore, CancellationToken cancellationToken)
     {
-        string transactionHex = await GetRawTransactionHex(utxoFromMempool.TransactionId, cancellationToken);
+        string transactionHex = await GetRawTransactionHex(utxoFromBitcoinCore.TransactionId, cancellationToken);
         Transaction transaction = Transaction.Parse(transactionHex, applicationOptions.Value.Network);
-        TxOut output = transaction.Outputs[utxoFromMempool.OutputIndex];
+        TxOut output = transaction.Outputs[utxoFromBitcoinCore.OutputIndex];
         return output;
     }
 
@@ -46,7 +47,7 @@ public class BlockchainInfoServiceMempool(
         CancellationToken cancellationToken)
     {
         HttpResponseMessage response =
-            await mempoolClient.GetTransactionHex(txId, cancellationToken);
+            await bitcoinCoreClient.GetTransactionHex(txId, cancellationToken);
 
         string rawResponse = await response.Content.ReadAsStringAsync(cancellationToken);
 
