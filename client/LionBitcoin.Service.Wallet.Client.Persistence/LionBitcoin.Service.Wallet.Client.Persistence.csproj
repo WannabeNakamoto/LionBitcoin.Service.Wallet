@@ -11,7 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="EFCore.NamingConventions" Version="10.0.1" />
+      <PackageReference Include="DotNetCore.SharpStreamer.Storage.Npgsql" Version="4.0.0" />
+      <PackageReference Include="DotNetCore.SharpStreamer.Transport.Npgsql" Version="4.0.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     </ItemGroup>
 

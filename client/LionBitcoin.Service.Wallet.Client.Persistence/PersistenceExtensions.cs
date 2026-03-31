@@ -1,4 +1,6 @@
-﻿using LionBitcoin.Service.Wallet.Client.Application.Repositories;
+﻿using DotNetCore.SharpStreamer.Storage.Npgsql;
+using DotNetCore.SharpStreamer.Transport.Npgsql;
+using LionBitcoin.Service.Wallet.Client.Application.Repositories;
 using LionBitcoin.Service.Wallet.Client.Application.Repositories.Abstractions;
 using LionBitcoin.Service.Wallet.Client.Persistence.Repositories;
 using LionBitcoin.Service.Wallet.Client.Persistence.Repositories.Abstractions;
@@ -16,7 +18,11 @@ public static class PersistenceExtensions
         public IServiceCollection AddPersistence()
         {
             return services
-                .AddDbContext();
+                .AddDbContext()
+                .AddScoped<IWalletRepository, WalletRepository>()
+                .AddScoped<IUtxoRepository, UtxoRepository>()
+                .AddSharpStreamerStorageNpgsql<WalletClientDbContext>()
+                .AddSharpStreamerTransportNpgsql();
         }
 
         private IServiceCollection AddDbContext()
@@ -27,8 +33,6 @@ public static class PersistenceExtensions
                 options.UseNpgsql(configuration.GetConnectionString(nameof(WalletClientDbContext)));
             });
             services.AddScoped<IUnitOfWork, UnitOfWork<WalletClientDbContext>>();
-            services.AddScoped<IWalletRepository, WalletRepository>();
-            services.AddScoped<IUtxoRepository, UtxoRepository>();
             return services;
         }
     }

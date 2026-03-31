@@ -1,4 +1,3 @@
-using DotNetCore.SharpStreamer;
 using LionBitcoin.Service.Wallet.Client.Application.Services.Abstractions;
 using LionBitcoin.Service.Wallet.Client.Infrastructure.MempoolClient;
 using LionBitcoin.Service.Wallet.Client.Infrastructure.MempoolClient.Options;

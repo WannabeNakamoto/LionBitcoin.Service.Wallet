@@ -11,8 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="DotNetCore.SharpStreamer.Storage.Npgsql" Version="3.0.3" />
-      <PackageReference Include="DotNetCore.SharpStreamer.Transport.Npgsql" Version="1.1.1" />
       <PackageReference Include="Refit" Version="10.1.6" />
       <PackageReference Include="Refit.HttpClientFactory" Version="10.1.6" />
     </ItemGroup>

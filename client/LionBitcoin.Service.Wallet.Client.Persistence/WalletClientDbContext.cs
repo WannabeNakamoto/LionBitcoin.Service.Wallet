@@ -9,7 +9,6 @@ public class WalletClientDbContext(DbContextOptions<WalletClientDbContext> optio
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         base.OnConfiguring(optionsBuilder);
     }
