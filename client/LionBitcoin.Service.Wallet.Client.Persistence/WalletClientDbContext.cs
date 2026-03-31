@@ -7,6 +7,8 @@ public class WalletClientDbContext(DbContextOptions<WalletClientDbContext> optio
 {
     public DbSet<Domain.Entities.Wallet> Wallets { get; set; }
 
+    public DbSet<Domain.Entities.Utxo> Utxos { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);

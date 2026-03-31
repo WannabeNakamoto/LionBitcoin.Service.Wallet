@@ -10,6 +10,8 @@ public abstract class BaseRepository<TEntity, TId>(
         where TId : IEquatable<TId>
         where TEntity : BaseEntity<TId>
 {
+    protected WalletClientDbContext DbContext => dbContext;
+
     public async Task Insert(TEntity entity, CancellationToken cancellationToken = default)
     {
         entity.CreatedAt = timeProvider.GetUtcNow();
