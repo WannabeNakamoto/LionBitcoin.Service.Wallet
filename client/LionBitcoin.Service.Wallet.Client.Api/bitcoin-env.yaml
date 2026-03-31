@@ -74,9 +74,16 @@ services:
       - "60001:60001"   # Electrum TCP
     volumes:
       - electrs_data:/data
-      - ./electrs.toml:/config/electrs.toml:ro
-    environment:
-      ELECTRS_CONF: /config/electrs.toml
+    command:
+      - --network=regtest
+      - --daemon-rpc-addr=bitcoind:18443
+      - --cookie=admin:admin
+      - --db-dir=/data
+      - --electrum-rpc-addr=0.0.0.0:60001
+      - --http-addr=0.0.0.0:3000
+      - --address-search
+      - --index-unspendables
+      - --jsonrpc-import
     depends_on:
       bitcoind:
         condition: service_healthy
