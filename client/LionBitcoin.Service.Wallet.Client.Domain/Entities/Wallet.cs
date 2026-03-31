@@ -8,5 +8,18 @@ public class Wallet : BaseEntity<Guid>
 
     public required string DepositAddress { get; set; }
 
+    public DateTimeOffset? LastSyncedTime { get; set; }
+
     public List<Utxo>? Utxos { get; set; }
+
+    public bool IsSyncNeeded(TimeProvider timeProvider)
+    {
+        if (LastSyncedTime is null)
+        {
+            return true;
+        }
+
+        DateTimeOffset currentTimeUtc = timeProvider.GetUtcNow();
+        return currentTimeUtc - LastSyncedTime > TimeSpan.FromMinutes(2);
+    }
 }

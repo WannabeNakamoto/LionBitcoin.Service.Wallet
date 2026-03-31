@@ -1,4 +1,5 @@
 ﻿using LionBitcoin.Service.Wallet.Client.Persistence.Configurations.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LionBitcoin.Service.Wallet.Client.Persistence.Configurations;
@@ -14,5 +15,9 @@ public class WalletConfigurations : BaseEntityTypeConfiguration<Domain.Entities.
         builder.Property(x => x.DepositAddress)
             .IsRequired()
             .HasMaxLength(62);
+
+        builder.Property(x => x.LastSyncedTime)
+            .HasColumnType("timestamptz")
+            .IsRequired(false);
     }
 }
