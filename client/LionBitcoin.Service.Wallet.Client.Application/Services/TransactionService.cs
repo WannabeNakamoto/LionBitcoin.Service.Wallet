@@ -4,7 +4,6 @@ using LionBitcoin.Service.Wallet.Client.Application.Services.Models;
 using LionBitcoin.Service.Wallet.Client.Application.Utils;
 using Microsoft.Extensions.Options;
 using NBitcoin;
-using NBitcoin.Crypto;
 using Utxo = LionBitcoin.Service.Wallet.Client.Domain.Entities.Utxo;
 
 namespace LionBitcoin.Service.Wallet.Client.Application.Services;
