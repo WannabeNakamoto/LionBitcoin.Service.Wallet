@@ -11,4 +11,6 @@ public class Utxo
     public required string LockingScriptHex { get; set; }
 
     public int Confirmations { get; set; }
+
+    public int Height { get; set; }
 }

@@ -15,7 +15,7 @@ public class BitcoinRpcRequest
     public List<object> Params { get; set; }
 
     [JsonIgnore]
-    public required MethodType MethodType
+    public MethodType MethodType
     {
         get => field;
         set

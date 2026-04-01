@@ -48,10 +48,11 @@ public class SyncUtxosCommandHandler(
         List<Domain.Entities.Utxo> utxoEntities = utxos.Select(utxo =>
             new Domain.Entities.Utxo
             {
-                TransactionId = [], // TODO: implement transaction id convention into bytes array
+                TransactionId = Convert.FromHexString(utxo.TransactionId),
                 Amount = utxo.Amount,
                 OutputIndex = utxo.OutputIndex,
-                BlockHeight = 0, // TODO: implement block height logic
+                BlockHeight = utxo.Height,
+                WalletId = wallet.Id,
             }).ToList();
 
         return utxoEntities

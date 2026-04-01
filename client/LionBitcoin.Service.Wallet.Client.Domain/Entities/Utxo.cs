@@ -14,7 +14,7 @@ public class Utxo : BaseEntity<Guid>
     /// </summary>
     public ulong Amount { get; set; }
 
-    public uint BlockHeight { get; set; }
+    public int BlockHeight { get; set; }
 
     public Guid WalletId { get; set; }
 
