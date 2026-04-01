@@ -16,7 +16,8 @@ public static class InfrastructureExtensions
         {
             return services
                 .AddBitcoinCoreClient()
-                .AddScoped<IBlockchainInfoService, BlockchainInfoServiceBitcoinCore>();
+                .AddScoped<IBlockchainInfoService, BlockchainInfoServiceBitcoinCore>()
+                .AddScoped<IBroadcastService, BroadcastServiceBitcoinCore>();
         }
 
         private IServiceCollection AddBitcoinCoreClient()

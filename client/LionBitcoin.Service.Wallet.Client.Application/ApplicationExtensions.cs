@@ -20,6 +20,7 @@ public static class ApplicationExtensions
 
             services.AddScoped<IScriptService, ScriptService>();
             services.AddScoped<IWalletService, WalletService>();
+            services.AddScoped<ITransactionService, TransactionService>();
 
             services.AddMediatR(options =>
             {

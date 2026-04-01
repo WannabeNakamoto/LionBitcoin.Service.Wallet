@@ -23,6 +23,7 @@ public class BitcoinRpcRequest
             Method = value switch
             {
                 MethodType.GetUtxos => "scantxoutset",
+                MethodType.SendRawTransaction => "sendrawtransaction",
                 _ => throw new ArgumentOutOfRangeException(nameof(MethodType), value, "undefined method type.")
             };
             field = value;

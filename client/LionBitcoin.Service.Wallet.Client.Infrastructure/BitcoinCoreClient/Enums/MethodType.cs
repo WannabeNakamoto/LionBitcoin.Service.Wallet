@@ -3,4 +3,5 @@
 public enum MethodType
 {
     GetUtxos = 1,
+    SendRawTransaction = 2,
 }
