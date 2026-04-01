@@ -1,3 +1,4 @@
+using LionBitcoin.Service.Wallet.Client.Application.Features.CreateTransaction;
 using LionBitcoin.Service.Wallet.Client.Application.Features.CreateWalletWithMnemonic;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,5 +16,14 @@ public class WalletController(IMediator mediator) : ControllerBase
     {
         CreateWalletWithMnemonicResponse response = await mediator.Send(command, cancellationToken);
         return Ok(response);
+    }
+
+    [HttpPost("create-transaction")]
+    public async Task<IActionResult> CreateTransaction(
+        [FromBody] CreateTransactionCommand command,
+        CancellationToken cancellationToken)
+    {
+        string transactionId = await mediator.Send(command, cancellationToken);
+        return Ok(transactionId);
     }
 }
