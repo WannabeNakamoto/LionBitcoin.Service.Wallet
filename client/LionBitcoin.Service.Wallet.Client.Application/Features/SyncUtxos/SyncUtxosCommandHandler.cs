@@ -28,11 +28,16 @@ public class SyncUtxosCommandHandler(
             return;
         }
 
-        List<Domain.Entities.Utxo> utxos = await GetUtxosToInsert(wallet, cancellationToken);
+        (List<Domain.Entities.Utxo> utxosToInsert, List<Domain.Entities.Utxo> utxosToDelete) = await GetUtxosToWorkWith(wallet, cancellationToken);
 
-        if (utxos.Any())
+        if (utxosToInsert.Any())
         {
-            await utxoRepository.InsertRange(utxos, cancellationToken);
+            await utxoRepository.InsertRange(utxosToInsert, cancellationToken);
+        }
+
+        if (utxosToDelete.Any())
+        {
+            await utxoRepository.DeleteRange(utxosToDelete, cancellationToken);
         }
 
         await streamerBus.PublishDelayedAsync(request, TimeSpan.FromMinutes(5));
@@ -41,7 +46,7 @@ public class SyncUtxosCommandHandler(
         await walletRepository.Update(wallet, cancellationToken);
     }
 
-    private async Task<List<Domain.Entities.Utxo>> GetUtxosToInsert(Domain.Entities.Wallet wallet, CancellationToken cancellationToken)
+    private async Task<(List<Domain.Entities.Utxo> utxosToInsert, List<Domain.Entities.Utxo> utxosToDelete)> GetUtxosToWorkWith(Domain.Entities.Wallet wallet, CancellationToken cancellationToken)
     {
         List<Utxo> utxos = await blockchainInfoService.GetUtxos(wallet.DepositAddress, cancellationToken);
 
@@ -55,10 +60,16 @@ public class SyncUtxosCommandHandler(
                 WalletId = wallet.Id,
             }).ToList();
 
-        return utxoEntities
+        List<Domain.Entities.Utxo> utxosToInsert = utxoEntities
             .AsParallel()
             .WithDegreeOfParallelism(utxoEntities.Count >= 10 ? utxoEntities.Count / 10 : 1) // It prevents case when count < 10, in that case count / 10 = 0 and degree of parallelism cannot be 0
             .Where(u => !wallet.Utxos!.Any(wu => wu.IsEquivalent(u)))
             .ToList();
+        List<Domain.Entities.Utxo> utxosToDelete = wallet.Utxos!
+            .AsParallel()
+            .WithDegreeOfParallelism(utxoEntities.Count >= 10 ? utxoEntities.Count / 10 : 1) // It prevents case when count < 10, in that case count / 10 = 0 and degree of parallelism cannot be 0
+            .Where(u => !utxoEntities.Any(wu => wu.IsEquivalent(u)))
+            .ToList();
+        return (utxosToInsert, utxosToDelete);
     }
 }

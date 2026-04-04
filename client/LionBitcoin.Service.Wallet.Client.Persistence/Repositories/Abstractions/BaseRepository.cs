@@ -1,4 +1,5 @@
-﻿using LionBitcoin.Service.Wallet.Client.Application.Repositories.Abstractions;
+﻿using System.Collections.Immutable;
+using LionBitcoin.Service.Wallet.Client.Application.Repositories.Abstractions;
 using LionBitcoin.Service.Wallet.Client.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,5 +49,13 @@ public abstract class BaseRepository<TEntity, TId>(
         return await dbContext.Set<TEntity>()
             .AsNoTracking()
             .SingleAsync(e => e.Id.Equals(id), cancellationToken);
+    }
+
+    public async Task DeleteRange(List<TEntity> entitiesToDelete, CancellationToken cancellationToken = default)
+    {
+        await dbContext.Set<TEntity>()
+            .Where(e =>
+                entitiesToDelete.Any(entityToDelete => entityToDelete.Id.Equals(e.Id)))
+            .ExecuteDeleteAsync(cancellationToken);
     }
 }

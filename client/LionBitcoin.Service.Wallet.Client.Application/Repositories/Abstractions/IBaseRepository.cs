@@ -13,4 +13,6 @@ public interface IBaseRepository<TEntity, in TId>
     Task Update(TEntity entity, CancellationToken cancellationToken = default);
 
     Task<TEntity> GetById(TId id, CancellationToken cancellationToken = default);
+
+    Task DeleteRange(List<TEntity> entitiesToDelete, CancellationToken cancellationToken = default);
 }
