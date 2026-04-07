@@ -44,6 +44,10 @@ internal class ReplService(IHostApplicationLifetime lifetime) : BackgroundServic
             AnsiConsole.MarkupLine("[grey]Goodbye.[/]");
             return true;
         }
+        else if(command == Commands.CreateWallet)
+        {
+            
+        }
         else
         {
             AnsiConsole.MarkupLine($"[red]Unknown command:[/] [white]{command}[/]. Type [grey]{Commands.Help}[/] for available commands.");

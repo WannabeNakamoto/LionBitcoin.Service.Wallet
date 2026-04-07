@@ -1,19 +1,23 @@
 <Solution>
   <Folder Name="/client-cli/">
+    <Project Path="client-cli/LionBitcoin.Wallet.Cli.Application/LionBitcoin.Wallet.Cli.Application.csproj" />
+    <Project Path="client-cli/LionBitcoin.Wallet.Cli.Domain/LionBitcoin.Wallet.Cli.Domain.csproj" />
+    <Project Path="client-cli/LionBitcoin.Wallet.Cli.Infrastructure/LionBitcoin.Wallet.Cli.Infrastructure.csproj" />
+    <Project Path="client-cli/LionBitcoin.Wallet.Cli.Persistence/LionBitcoin.Wallet.Cli.Persistence.csproj" />
     <Project Path="client-cli/LionBitcoin.Wallet.Cli/LionBitcoin.Wallet.Cli.csproj" />
   </Folder>
   <Folder Name="/client/">
-    <Project Path="client\LionBitcoin.Service.Wallet.Client.Api\LionBitcoin.Service.Wallet.Client.Api.csproj" Type="C#" />
-    <Project Path="client\LionBitcoin.Service.Wallet.Client.Application\LionBitcoin.Service.Wallet.Client.Application.csproj" Type="C#" />
-    <Project Path="client\LionBitcoin.Service.Wallet.Client.Domain\LionBitcoin.Service.Wallet.Client.Domain.csproj" Type="C#" />
-    <Project Path="client\LionBitcoin.Service.Wallet.Client.Infrastructure\LionBitcoin.Service.Wallet.Client.Infrastructure.csproj" Type="C#" />
-    <Project Path="client\LionBitcoin.Service.Wallet.Client.Persistence\LionBitcoin.Service.Wallet.Client.Persistence.csproj" Type="C#" />
+    <Project Path="client\LionBitcoin.Service.Wallet.Client.Api\LionBitcoin.Service.Wallet.Client.Api.csproj" />
+    <Project Path="client\LionBitcoin.Service.Wallet.Client.Application\LionBitcoin.Service.Wallet.Client.Application.csproj" />
+    <Project Path="client\LionBitcoin.Service.Wallet.Client.Domain\LionBitcoin.Service.Wallet.Client.Domain.csproj" />
+    <Project Path="client\LionBitcoin.Service.Wallet.Client.Infrastructure\LionBitcoin.Service.Wallet.Client.Infrastructure.csproj" />
+    <Project Path="client\LionBitcoin.Service.Wallet.Client.Persistence\LionBitcoin.Service.Wallet.Client.Persistence.csproj" />
   </Folder>
   <Folder Name="/server/">
     <Project Path="server/LionBitcoin.Service.Wallet.Api/LionBitcoin.Service.Wallet.Api.csproj" />
-    <Project Path="server\LionBitcoin.Service.Wallet.Application\LionBitcoin.Service.Wallet.Application.csproj" Type="C#" />
-    <Project Path="server\LionBitcoin.Service.Wallet.Domain\LionBitcoin.Service.Wallet.Domain.csproj" Type="C#" />
-    <Project Path="server\LionBitcoin.Service.Wallet.Infrastructure\LionBitcoin.Service.Wallet.Infrastructure.csproj" Type="C#" />
-    <Project Path="server\LionBitcoin.Service.Wallet.Persistence\LionBitcoin.Service.Wallet.Persistence.csproj" Type="C#" />
+    <Project Path="server\LionBitcoin.Service.Wallet.Application\LionBitcoin.Service.Wallet.Application.csproj" />
+    <Project Path="server\LionBitcoin.Service.Wallet.Domain\LionBitcoin.Service.Wallet.Domain.csproj" />
+    <Project Path="server\LionBitcoin.Service.Wallet.Infrastructure\LionBitcoin.Service.Wallet.Infrastructure.csproj" />
+    <Project Path="server\LionBitcoin.Service.Wallet.Persistence\LionBitcoin.Service.Wallet.Persistence.csproj" />
   </Folder>
 </Solution>
