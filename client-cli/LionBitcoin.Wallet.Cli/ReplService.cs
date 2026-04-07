@@ -1,3 +1,5 @@
+using System.Reflection;
+using LionBitcoin.Wallet.Cli.Constants;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;
 
@@ -11,48 +13,49 @@ internal class ReplService(IHostApplicationLifetime lifetime) : BackgroundServic
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            var input = await ReadInputAsync(stoppingToken);
+            string input = await ReadInputAsync(stoppingToken);
 
-            if (input is null) break; // Ctrl+C or stream closed
-            if (string.IsNullOrWhiteSpace(input)) continue;
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                continue;
+            }
 
-            var quit = await HandleAsync(input.Trim(), stoppingToken);
-            if (quit) break;
+            bool isQuitCommand = await HandleAsync(input.Trim(), stoppingToken);
+            if (isQuitCommand)
+            {
+                break;
+            }
         }
 
         lifetime.StopApplication();
     }
 
-    private static async Task<bool> HandleAsync(string input, CancellationToken ct)
+    private static async Task<bool> HandleAsync(string input, CancellationToken cancellationToken)
     {
-        var parts = input.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-        var command = parts[0].ToLowerInvariant();
-        var rest = parts.Length > 1 ? parts[1] : string.Empty;
+        string[] parts = input.Split(' ', 2); // First is command and second are parameters.
+        string command = parts[0].ToLower();
+        string? parameters = parts.Length > 1 ? parts[1] : null;
 
-        switch (command)
+        if (command == Commands.Help)
         {
-            case "help":
-                ShowHelp();
-                break;
-
-            case "exit":
-            case "quit":
-                AnsiConsole.MarkupLine("[grey]Goodbye.[/]");
-                return true;
-
-            default:
-                AnsiConsole.MarkupLine($"[red]Unknown command:[/] [white]{command}[/]. Type [grey]help[/] for available commands.");
-                break;
+            ShowHelp();
+        }else if (command == Commands.Exit)
+        {
+            AnsiConsole.MarkupLine("[grey]Goodbye.[/]");
+            return true;
+        }
+        else
+        {
+            AnsiConsole.MarkupLine($"[red]Unknown command:[/] [white]{command}[/]. Type [grey]{Commands.Help}[/] for available commands.");
         }
 
         return false;
     }
 
-    private static async Task<string?> ReadInputAsync(CancellationToken cancellationToken)
+    private static async Task<string> ReadInputAsync(CancellationToken cancellationToken)
     {
         return await AnsiConsole.PromptAsync(
-            new TextPrompt<string>("[bold gold1]>[/] ")
-                .AllowEmpty(),
+            new TextPrompt<string>("[bold gold1]>[/] "),
             cancellationToken);
     }
 
@@ -60,7 +63,7 @@ internal class ReplService(IHostApplicationLifetime lifetime) : BackgroundServic
     {
         AnsiConsole.Clear();
         AnsiConsole.Write(new FigletText("LionBitcoin Wallet").Color(Color.Gold1));
-        AnsiConsole.MarkupLine("Type [grey]help[/] for available commands, [grey]exit[/] to quit.\n");
+        AnsiConsole.MarkupLine($"Type [grey]{Commands.Help.Name}[/] for available commands, [grey]{Commands.Exit.Name}[/] to quit.\n");
     }
 
     private static void ShowHelp()
@@ -70,8 +73,16 @@ internal class ReplService(IHostApplicationLifetime lifetime) : BackgroundServic
             .AddColumn("[grey]Command[/]")
             .AddColumn("[grey]Description[/]");
 
-        table.AddRow("[white]help[/]", "Show this help");
-        table.AddRow("[white]exit[/]", "Exit the application");
+        Type commandType = typeof(Command);
+        IEnumerable<FieldInfo> commands = typeof(Commands)
+            .GetFields(BindingFlags.Static | BindingFlags.Public)
+            .Where(f => f is { IsStatic: true, IsInitOnly: true } &&
+                        f.FieldType == commandType);
+        foreach (FieldInfo command in commands)
+        {
+            table.AddRow($"[white]{((Command)command.GetValue(null)!).Name}[/]", ((Command)command.GetValue(null)!).Description);
+        }
+        
 
         AnsiConsole.Write(table);
     }
