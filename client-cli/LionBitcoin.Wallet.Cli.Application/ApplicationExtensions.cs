@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using DotNetCore.SharpStreamer;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LionBitcoin.Wallet.Cli.Application;
@@ -14,6 +15,8 @@ public static class ApplicationExtensions
                 options.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
                 options.Lifetime = ServiceLifetime.Transient;
             });
+            services
+                .AddSharpStreamer("SharpStreamerSettings", Assembly.GetExecutingAssembly());
             return services;
         }
     }

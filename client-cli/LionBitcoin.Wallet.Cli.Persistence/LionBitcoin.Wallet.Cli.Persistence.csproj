@@ -10,4 +10,10 @@
       <ProjectReference Include="..\LionBitcoin.Wallet.Cli.Application\LionBitcoin.Wallet.Cli.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="DotNetCore.SharpStreamer.Storage.Sqlite" Version="1.0.1" />
+      <PackageReference Include="DotNetCore.SharpStreamer.Transport.Sqlite" Version="1.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.5" />
+    </ItemGroup>
+
 </Project>

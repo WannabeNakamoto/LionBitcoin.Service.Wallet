@@ -4,5 +4,5 @@ namespace LionBitcoin.Wallet.Cli.Application.Features.CreateWallet;
 
 public class CreateWalletCommand : IRequest
 {
-    
+    public required List<string> SeedPhrase { get; set; }
 }

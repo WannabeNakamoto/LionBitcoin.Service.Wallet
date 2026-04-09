@@ -13,6 +13,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\LionBitcoin.Wallet.Cli.Persistence\LionBitcoin.Wallet.Cli.Persistence.csproj" />
       <ProjectReference Include="..\LionBitcoin.Wallet.Cli.Infrastructure\LionBitcoin.Wallet.Cli.Infrastructure.csproj" />
     </ItemGroup>

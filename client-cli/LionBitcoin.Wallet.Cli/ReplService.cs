@@ -1,11 +1,16 @@
 using System.Reflection;
+using LionBitcoin.Wallet.Cli.Application.Features.CreateWallet;
 using LionBitcoin.Wallet.Cli.Constants;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;
 
 namespace LionBitcoin.Wallet.Cli;
 
-internal class ReplService(IHostApplicationLifetime lifetime) : BackgroundService
+internal class ReplService(
+    IHostApplicationLifetime lifetime,
+    IServiceScopeFactory serviceScopeFactory) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -30,7 +35,7 @@ internal class ReplService(IHostApplicationLifetime lifetime) : BackgroundServic
         lifetime.StopApplication();
     }
 
-    private static async Task<bool> HandleAsync(string input, CancellationToken cancellationToken)
+    private async Task<bool> HandleAsync(string input, CancellationToken cancellationToken)
     {
         string[] parts = input.Split(' ', 2); // First is command and second are parameters.
         string command = parts[0].ToLower();
@@ -46,7 +51,9 @@ internal class ReplService(IHostApplicationLifetime lifetime) : BackgroundServic
         }
         else if(command == Commands.CreateWallet)
         {
-            
+            List<string> seedPhrase = parts[1].Split(' ').ToList();
+            CreateWalletCommand c = new() { SeedPhrase = seedPhrase };
+            await RunThroughMediator(c, cancellationToken);
         }
         else
         {
@@ -89,5 +96,19 @@ internal class ReplService(IHostApplicationLifetime lifetime) : BackgroundServic
         
 
         AnsiConsole.Write(table);
+    }
+
+    private async Task RunThroughMediator<T>(T command, CancellationToken cancellationToken)
+    {
+        await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
+        IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        try
+        {
+            await mediator.Send(command!, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            AnsiConsole.MarkupLine($"[red]{e.Message}[/]");
+        }
     }
 }
