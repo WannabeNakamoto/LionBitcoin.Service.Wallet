@@ -1,6 +1,8 @@
 ﻿using DotNetCore.SharpStreamer.Storage.Sqlite;
 using DotNetCore.SharpStreamer.Transport.Sqlite;
+using LionBitcoin.Wallet.Cli.Application.Repositories;
 using LionBitcoin.Wallet.Cli.Application.Repositories.Abstractions;
+using LionBitcoin.Wallet.Cli.Persistence.Repositories;
 using LionBitcoin.Wallet.Cli.Persistence.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +19,7 @@ public static class PersistenceExtensions
         {
             return services
                 .AddDbContext()
+                .AddScoped<IWalletRepository, WalletRepository>()
                 .AddSharpStreamerStorageSqlite<LionBitcoinDbContext>()
                 .AddSharpStreamerTransportSqlite();
         }

@@ -10,6 +10,7 @@ public static class ApplicationExtensions
     {
         public IServiceCollection AddApplication()
         {
+            services.AddSingleton(TimeProvider.System);
             services.AddMediatR(options =>
             {
                 options.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
