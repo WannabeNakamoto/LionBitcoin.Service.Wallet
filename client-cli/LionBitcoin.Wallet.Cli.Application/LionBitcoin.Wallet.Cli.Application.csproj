@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="DotNetCore.SharpStreamer" Version="4.0.2" />
+      <PackageReference Include="NBitcoin" Version="9.0.5" />
     </ItemGroup>
 
     <ItemGroup>
