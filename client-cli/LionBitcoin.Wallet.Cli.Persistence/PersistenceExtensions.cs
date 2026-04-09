@@ -5,6 +5,7 @@ using LionBitcoin.Wallet.Cli.Persistence.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace LionBitcoin.Wallet.Cli.Persistence;
 
@@ -29,6 +30,18 @@ public static class PersistenceExtensions
             });
             services.AddScoped<IUnitOfWork, UnitOfWork<LionBitcoinDbContext>>();
             return services;
+        }
+    }
+
+    extension(IHost host)
+    {
+        public IHost ConfigurePersistence()
+        {
+            IServiceScopeFactory scopeFactory = host.Services.GetRequiredService<IServiceScopeFactory>();
+            AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
+            scope.ServiceProvider.GetRequiredService<LionBitcoinDbContext>().Database.Migrate();
+            scope.DisposeAsync();
+            return host;
         }
     }
 }

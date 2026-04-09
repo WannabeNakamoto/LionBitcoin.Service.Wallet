@@ -14,4 +14,6 @@ builder.Services.AddHostedService<ReplService>();
 
 IHost app = builder.Build();
 
+app.ConfigurePersistence();
+
 await app.RunAsync();
